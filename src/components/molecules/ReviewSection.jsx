@@ -93,15 +93,13 @@ const [reviews, setReviews] = useState([]);
     );
   }
 
-  if (error || !reviews.length) {
+if (error || !reviews.length) {
     return (
       <div className={cn("bg-white rounded-xl p-6 shadow-soft", className)}>
         <h3 className="text-xl font-display font-semibold text-primary mb-4">
           Customer Reviews
         </h3>
         <p className="text-gray-500 text-center py-8">
-          {error || "No reviews available for this product yet."}
-<p className="text-gray-500 text-center py-8">
           {error || "No reviews available for this product yet."}
         </p>
       </div>
@@ -151,8 +149,8 @@ const [reviews, setReviews] = useState([]);
   const averageRating = reviews.reduce((sum, review) => sum + (review?.rating || 0), 0) / reviews.length;
   const totalReviews = reviews.length;
   return (
-    <div className={cn("bg-white rounded-xl p-6 shadow-soft", className)}>
-<div className="mb-6">
+<div className={cn("bg-white rounded-xl p-6 shadow-soft", className)}>
+      <div className="mb-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-display font-semibold text-primary">
             Customer Reviews
@@ -269,8 +267,8 @@ const [reviews, setReviews] = useState([]);
           </div>
         </div>
 
-        {/* Rating Distribution */}
-<div className="mb-8">
+{/* Rating Distribution */}
+        <div className="mb-8">
           {[5, 4, 3, 2, 1].map((stars) => {
             const count = reviews.filter(r => r?.rating && Math.floor(r.rating) === stars).length;
             const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
@@ -295,8 +293,8 @@ const [reviews, setReviews] = useState([]);
       </div>
 
       {/* Individual Reviews */}
-      <div className="space-y-6">
-{reviews.map((review) => (
+<div className="space-y-6">
+        {reviews.map((review) => (
           <div key={review?.Id || Math.random()} className="border-b border-gray-100 last:border-b-0 pb-6 last:pb-0">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
               <div className="flex items-center gap-3 mb-2 sm:mb-0">
@@ -321,7 +319,6 @@ const [reviews, setReviews] = useState([]);
                 {review?.date ? formatDate(review.date) : 'Unknown date'}
               </span>
             </div>
-            
 {review?.title && (
               <h5 className="font-medium text-primary mb-2">
                 {review.title}
@@ -338,9 +335,9 @@ const [reviews, setReviews] = useState([]);
                 <span>{review.helpful} people found this helpful</span>
               </div>
             )}
-          </div>
-        ))}
 </div>
+        ))}
+      </div>
     </div>
   );
 }
