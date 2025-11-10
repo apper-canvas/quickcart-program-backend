@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { cn } from "@/utils/cn";
-import ApperIcon from "@/components/ApperIcon";
-import Loading from "@/components/ui/Loading";
-import Button from "@/components/atoms/Button";
+import React, { useEffect, useState } from "react";
 import { reviewService } from "@/services/api/reviewService";
 import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Loading from "@/components/ui/Loading";
+import { cn } from "@/utils/cn";
 
 function ReviewSection({ productId, className }) {
 const [reviews, setReviews] = useState([]);
@@ -101,14 +101,55 @@ const [reviews, setReviews] = useState([]);
         </h3>
         <p className="text-gray-500 text-center py-8">
           {error || "No reviews available for this product yet."}
+<p className="text-gray-500 text-center py-8">
+          {error || "No reviews available for this product yet."}
         </p>
       </div>
     );
   }
 
-  const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
-  const totalReviews = reviews.length;
+  // Handle form submission
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    
+    if (formData.rating === 0 || !formData.reviewerName.trim() || !formData.reviewText.trim()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
+    try {
+      setSubmitting(true);
+      
+      const reviewData = {
+        productId: productId,
+        rating: formData.rating,
+        reviewerName: formData.reviewerName.trim(),
+        reviewText: formData.reviewText.trim()
+      };
+
+      await reviewService.create(reviewData);
+      
+      // Reset form
+      setFormData({
+        rating: 0,
+        reviewerName: '',
+        reviewText: ''
+      });
+      setShowForm(false);
+      
+      // Refresh reviews list
+      await loadReviews();
+      
+      toast.success("Review submitted successfully!");
+      
+    } catch (error) {
+      toast.error(error.message || "Failed to submit review");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  const averageRating = reviews.reduce((sum, review) => sum + (review?.rating || 0), 0) / reviews.length;
+  const totalReviews = reviews.length;
   return (
     <div className={cn("bg-white rounded-xl p-6 shadow-soft", className)}>
 <div className="mb-6">
@@ -229,11 +270,10 @@ const [reviews, setReviews] = useState([]);
         </div>
 
         {/* Rating Distribution */}
-        <div className="mb-8">
+<div className="mb-8">
           {[5, 4, 3, 2, 1].map((stars) => {
-            const count = reviews.filter(r => Math.floor(r.rating) === stars).length;
+            const count = reviews.filter(r => r?.rating && Math.floor(r.rating) === stars).length;
             const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
-            
             return (
               <div key={stars} className="flex items-center gap-3 mb-2">
                 <span className="text-sm font-medium text-gray-600 w-12">
@@ -256,43 +296,43 @@ const [reviews, setReviews] = useState([]);
 
       {/* Individual Reviews */}
       <div className="space-y-6">
-        {reviews.map((review) => (
-          <div key={review.Id} className="border-b border-gray-100 last:border-b-0 pb-6 last:pb-0">
+{reviews.map((review) => (
+          <div key={review?.Id || Math.random()} className="border-b border-gray-100 last:border-b-0 pb-6 last:pb-0">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
               <div className="flex items-center gap-3 mb-2 sm:mb-0">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                  {review.customerName.charAt(0).toUpperCase()}
+                  {review?.customerName?.charAt(0)?.toUpperCase() || '?'}
                 </div>
                 <div>
                   <h4 className="font-medium text-primary">
-                    {review.customerName}
+                    {review?.customerName || 'Anonymous'}
                   </h4>
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
-                      {renderStars(review.rating)}
+                      {renderStars(review?.rating || 0)}
                     </div>
                     <span className="text-sm text-gray-600">
-                      {review.rating.toFixed(1)}
+                      {(review?.rating || 0).toFixed(1)}
                     </span>
                   </div>
                 </div>
               </div>
               <span className="text-sm text-gray-500">
-                {formatDate(review.date)}
+                {review?.date ? formatDate(review.date) : 'Unknown date'}
               </span>
             </div>
             
-            {review.title && (
+{review?.title && (
               <h5 className="font-medium text-primary mb-2">
                 {review.title}
               </h5>
             )}
             
             <p className="text-gray-700 leading-relaxed">
-              {review.comment}
+              {review?.comment || 'No comment provided'}
             </p>
             
-            {review.helpful > 0 && (
+            {(review?.helpful || 0) > 0 && (
               <div className="flex items-center gap-2 mt-3 text-sm text-gray-600">
                 <ApperIcon name="ThumbsUp" className="w-4 h-4" />
                 <span>{review.helpful} people found this helpful</span>
@@ -303,47 +343,6 @@ const [reviews, setReviews] = useState([]);
 </div>
     </div>
   );
-
-  // Handle form submission
-  async function handleSubmitReview(e) {
-    e.preventDefault();
-    
-    if (formData.rating === 0 || !formData.reviewerName.trim() || !formData.reviewText.trim()) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      
-      const reviewData = {
-        productId: productId,
-        rating: formData.rating,
-        reviewerName: formData.reviewerName.trim(),
-        reviewText: formData.reviewText.trim()
-      };
-
-      await reviewService.create(reviewData);
-      
-      // Reset form
-      setFormData({
-        rating: 0,
-        reviewerName: '',
-        reviewText: ''
-      });
-      setShowForm(false);
-      
-      // Refresh reviews list
-      await loadReviews();
-      
-      toast.success("Review submitted successfully!");
-      
-    } catch (error) {
-      toast.error(error.message || "Failed to submit review");
-    } finally {
-      setSubmitting(false);
-    }
-  }
 }
 
 export default ReviewSection;
