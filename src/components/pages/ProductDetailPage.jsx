@@ -151,7 +151,7 @@ const loadProduct = async () => {
             </div>
 
             {/* Product Info */}
-            <div className="space-y-6">
+<div className="space-y-6">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" size="sm">
@@ -198,13 +198,91 @@ const loadProduct = async () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <p className="text-4xl font-bold text-primary font-display">
-                  {formatPrice(product.price)}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Free shipping on orders over $50
-                </p>
+              {/* Pricing and Availability Section */}
+              <div className="space-y-6 p-6 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200">
+                {/* Pricing */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {/* Check if product has discount (simulate 25% discount for products with ID divisible by 3) */}
+                    {product.Id % 3 === 0 ? (
+                      <>
+                        {/* Current Price */}
+                        <span className="text-5xl lg:text-6xl font-bold text-accent font-display">
+                          {formatPrice(product.price * 0.75)}
+                        </span>
+                        {/* Original Price */}
+                        <span className="text-2xl font-semibold text-gray-500 line-through">
+                          {formatPrice(product.price)}
+                        </span>
+                        {/* Discount Badge */}
+                        <Badge variant="discount" size="sm" className="px-3 py-1 text-sm">
+                          25% OFF
+                        </Badge>
+                      </>
+                    ) : (
+                      <span className="text-5xl lg:text-6xl font-bold text-accent font-display">
+                        {formatPrice(product.price)}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Savings Message */}
+                  {product.Id % 3 === 0 && (
+                    <div className="flex items-center gap-2">
+                      <ApperIcon name="CheckCircle" className="w-5 h-5 text-success" />
+                      <span className="text-success font-semibold">
+                        You save {formatPrice(product.price * 0.25)} (25%)
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Availability Status */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    {isOutOfStock ? (
+                      <>
+                        <ApperIcon name="X" className="w-5 h-5 text-error" />
+                        <span className="text-error font-semibold">Out of Stock</span>
+                      </>
+                    ) : isLowStock ? (
+                      <>
+                        <ApperIcon name="AlertTriangle" className="w-5 h-5 text-warning" />
+                        <span className="text-warning font-semibold">Only {product.stock} left</span>
+                      </>
+                    ) : (
+                      <>
+                        <ApperIcon name="CheckCircle" className="w-5 h-5 text-success" />
+                        <span className="text-success font-semibold">In Stock</span>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Delivery Information */}
+                  {!isOutOfStock && (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <ApperIcon name="Truck" className="w-5 h-5 text-primary" />
+                        <span className="text-primary font-medium">
+                          Get it by Friday, Nov 15
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" className="text-accent hover:text-accent hover:underline p-0 h-auto">
+                          Change ZIP code or see more shipping options
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Free Shipping Notice */}
+                <div className="pt-4 border-t border-gray-200">
+                  <p className="text-sm text-gray-600 flex items-center gap-2">
+                    <ApperIcon name="Package" className="w-4 h-4" />
+                    Free shipping on orders over $50
+                  </p>
+                </div>
               </div>
 
               <div className="space-y-3">

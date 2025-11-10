@@ -13,10 +13,11 @@ const Badge = React.forwardRef(({
   const variants = {
     default: "bg-gray-100 text-gray-800",
     primary: "bg-gradient-to-r from-accent to-red-500 text-white shadow-soft",
-    secondary: "bg-secondary text-white",
+secondary: "bg-secondary text-white",
     success: "bg-success text-white",
     warning: "bg-warning text-primary",
-    error: "bg-error text-white"
+    error: "bg-error text-white",
+    discount: "bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold"
   };
 
   const sizes = {
