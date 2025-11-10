@@ -7,10 +7,10 @@ import Loading from "@/components/ui/Loading";
 import ErrorView from "@/components/ui/ErrorView";
 import ApperIcon from "@/components/ApperIcon";
 import ProductCarousel from "@/components/molecules/ProductCarousel";
+import ReviewSection from "@/components/molecules/ReviewSection";
 import { productService } from "@/services/api/productService";
 import { cartService } from "@/services/api/cartService";
 import { toast } from "react-toastify";
-
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -286,6 +286,8 @@ const loadProduct = async () => {
           </div>
 </div>
         
+        {/* Reviews Section */}
+        <ReviewSection productId={product.Id} />
         {/* Related Products Carousel */}
         <div className="mt-12">
           <ProductCarousel
