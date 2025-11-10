@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { cn } from "@/utils/cn";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Loading from "@/components/ui/Loading";
-import ErrorView from "@/components/ui/ErrorView";
-import ApperIcon from "@/components/ApperIcon";
-import ProductCarousel from "@/components/molecules/ProductCarousel";
-import ReviewSection from "@/components/molecules/ReviewSection";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { productService } from "@/services/api/productService";
 import { cartService } from "@/services/api/cartService";
 import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Badge from "@/components/atoms/Badge";
+import ReviewSection from "@/components/molecules/ReviewSection";
+import ProductCarousel from "@/components/molecules/ProductCarousel";
+import Loading from "@/components/ui/Loading";
+import ErrorView from "@/components/ui/ErrorView";
+import { cn } from "@/utils/cn";
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,10 +19,25 @@ const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
+  const [zipCode, setZipCode] = useState("");
+
+  const handleZipCodeChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ''); // Only allow digits
+    setZipCode(value);
+  };
+
+  const handleZipCodeSearch = () => {
+    if (zipCode && zipCode.length === 5) {
+      // Simulate delivery date calculation based on ZIP code
+      toast.info(`Delivery estimates updated for ZIP code ${zipCode}`);
+    } else {
+      toast.error("Please enter a valid 5-digit ZIP code");
+    }
+  };
 
   useEffect(() => {
     loadProduct();
@@ -258,7 +274,7 @@ const loadProduct = async () => {
                     )}
                   </div>
 
-                  {/* Delivery Information */}
+{/* Delivery Information */}
                   {!isOutOfStock && (
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
@@ -268,9 +284,23 @@ const loadProduct = async () => {
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" className="text-accent hover:text-accent hover:underline p-0 h-auto">
-                          Change ZIP code or see more shipping options
-                        </Button>
+                        <div className="relative flex-1 max-w-xs">
+                          <Input
+                            type="text"
+                            placeholder="Enter ZIP code (e.g., 12345)"
+                            value={zipCode}
+                            onChange={handleZipCodeChange}
+                            className="pr-10 text-sm"
+                            maxLength={5}
+                          />
+                          <button
+                            onClick={handleZipCodeSearch}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary transition-colors"
+                            type="button"
+                          >
+                            <ApperIcon name="Search" className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
