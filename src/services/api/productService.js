@@ -36,8 +36,7 @@ class ProductService {
       }, 250);
     });
   }
-
-  async searchProducts(query) {
+async searchProducts(query) {
     return new Promise((resolve) => {
       setTimeout(() => {
         const filtered = this.products.filter(p =>
@@ -47,6 +46,18 @@ class ProductService {
         );
         resolve([...filtered]);
       }, 300);
+    });
+  }
+
+  async getRelated(productId, category, limit = 4) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const related = this.products
+          .filter(p => p.Id !== productId && p.category === category)
+          .sort((a, b) => b.rating - a.rating || b.reviews - a.reviews)
+          .slice(0, limit);
+        resolve([...related]);
+      }, 400);
     });
   }
 

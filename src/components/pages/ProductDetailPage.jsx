@@ -6,6 +6,7 @@ import Badge from "@/components/atoms/Badge";
 import Loading from "@/components/ui/Loading";
 import ErrorView from "@/components/ui/ErrorView";
 import ApperIcon from "@/components/ApperIcon";
+import ProductCarousel from "@/components/molecules/ProductCarousel";
 import { productService } from "@/services/api/productService";
 import { cartService } from "@/services/api/cartService";
 import { toast } from "react-toastify";
@@ -13,28 +14,45 @@ import { toast } from "react-toastify";
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
+const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loadingRelated, setLoadingRelated] = useState(false);
 
   useEffect(() => {
     loadProduct();
   }, [id]);
 
-  const loadProduct = async () => {
+const loadProduct = async () => {
     try {
       setError("");
       setLoading(true);
       const productData = await productService.getById(id);
       setProduct(productData);
       setSelectedImage(0);
+      
+      // Load related products after main product loads
+      loadRelatedProducts(productData);
     } catch (err) {
       setError(err.message || "Product not found");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadRelatedProducts = async (currentProduct) => {
+    try {
+      setLoadingRelated(true);
+      const related = await productService.getRelated(currentProduct.Id, currentProduct.category);
+      setRelatedProducts(related);
+    } catch (err) {
+      console.error("Failed to load related products:", err);
+    } finally {
+      setLoadingRelated(false);
     }
   };
 
@@ -266,6 +284,16 @@ const ProductDetailPage = () => {
               </div>
             </div>
           </div>
+</div>
+        
+        {/* Related Products Carousel */}
+        <div className="mt-12">
+          <ProductCarousel
+            products={relatedProducts}
+            loading={loadingRelated}
+            title="You might also like"
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          />
         </div>
       </div>
     </div>
