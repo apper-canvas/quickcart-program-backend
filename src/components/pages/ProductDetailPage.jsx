@@ -125,7 +125,7 @@ const loadProduct = async () => {
                 onClick={() => navigate(-1)}
                 className="inline-flex items-center gap-2 hover:bg-white/80">
                 <ApperIcon name="ArrowLeft" size={16} />Back to Products
-                          </Button>
+                                          </Button>
         </div>
         <div className="bg-white rounded-2xl shadow-elevated overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
@@ -160,9 +160,9 @@ const loadProduct = async () => {
                                 {product.category}
                             </Badge>
                             {isLowStock && !isOutOfStock && <Badge variant="warning" size="sm">Only {product.stock}left
-                                                    </Badge>}
+                                                                                    </Badge>}
                             {isOutOfStock && <Badge variant="error" size="sm">Out of Stock
-                                                    </Badge>}
+                                                                                    </Badge>}
                         </div>
                         <h1 className="text-3xl lg:text-4xl font-bold font-display text-primary">
                             {product.name}
@@ -185,7 +185,7 @@ const loadProduct = async () => {
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-600">
                                 {product.reviews}reviews
-                                                  </span>
+                                                                                  </span>
                         </div>
                     </div>
                     {/* Pricing and Availability Section */}
@@ -206,7 +206,7 @@ const loadProduct = async () => {
                                     </span>
                                     {/* Discount Badge */}
                                     <Badge variant="discount" size="sm" className="px-3 py-1 text-sm">25% OFF
-                                                                </Badge>
+                                                                                                        </Badge>
                                 </> : <span className="text-5xl lg:text-6xl font-bold text-accent font-display">
                                     {formatPrice(product.price)}
                                 </span>}
@@ -215,7 +215,7 @@ const loadProduct = async () => {
                             {product.Id % 3 === 0 && <div className="flex items-center gap-2">
                                 <ApperIcon name="CheckCircle" className="w-5 h-5 text-success" />
                                 <span className="text-success font-semibold">You save {formatPrice(product.price * 0.25)}(25%)
-                                                          </span>
+                                                                                              </span>
                             </div>}
                         </div>
                         {/* Availability Status */}
@@ -237,7 +237,7 @@ const loadProduct = async () => {
                                 <div className="flex items-center gap-2">
                                     <ApperIcon name="Truck" className="w-5 h-5 text-primary" />
                                     <span className="text-primary font-medium">Get it by Friday, Nov 15
-                                                                </span>
+                                                                                                        </span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div className="relative flex-1 max-w-xs">
@@ -262,7 +262,7 @@ const loadProduct = async () => {
                         <div className="pt-4 border-t border-gray-200">
                             <p className="text-sm text-gray-600 flex items-center gap-2">
                                 <ApperIcon name="Package" className="w-4 h-4" />Free shipping on orders over $50
-                                                  </p>
+                                                                                  </p>
                         </div>
                     </div>
                     <div className="space-y-3">
@@ -305,9 +305,9 @@ const loadProduct = async () => {
                                 className="flex-1 bg-gradient-to-r from-accent to-red-500 hover:brightness-110">
                                 {addingToCart ? <>
                                     <ApperIcon name="Loader2" className="w-5 h-5 mr-2 animate-spin" />Adding...
-                                                          </> : <>
+                                                                                              </> : <>
                                     <ApperIcon name="ShoppingCart" className="w-5 h-5 mr-2" />Add to Cart
-                                                          </>}
+                                                                                              </>}
                             </Button>
                             <Button
                                 variant="outline"
@@ -316,15 +316,15 @@ const loadProduct = async () => {
                                 disabled={isOutOfStock}
                                 className="flex-1 border-2 border-accent text-accent hover:bg-accent hover:text-white">
                                 <ApperIcon name="Zap" className="w-5 h-5 mr-2" />Buy Now
-                                                  </Button>
+                                                                                  </Button>
                         </div>
                         {isOutOfStock && <p className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg">This item is currently out of stock
-                                              </p>}
+                                                                          </p>}
                     </div>
                     {/* Enhanced Product Specifications */}
                     <div className="bg-white rounded-xl p-6 shadow-soft">
                         <h3 className="text-xl font-display font-semibold text-primary mb-4">Product Specifications
-                                            </h3>
+                                                                        </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-3">
                                 <div
@@ -397,16 +397,17 @@ const loadProduct = async () => {
                     </div>
                     {/* Reviews Section - Moved below specifications */}
                     <ReviewSection productId={product.Id} className="compact" />
-                    {/* Related Products Carousel */}
-                    <div className="mt-12">
-                        <ProductCarousel
-                            products={relatedProducts}
-                            loading={loadingRelated}
-                            title="You might also like"
-                            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" />
-                    </div>
                 </div>
-            </div></div></div></div>
+            </div>
+        </div>
+        {/* Related Products Carousel - Full Width Section */}
+        <div className="bg-gray-50 py-16 mt-12">
+            <ProductCarousel
+                products={relatedProducts}
+                loading={loadingRelated}
+                title="You might also like"
+                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" />
+        </div></div></div>
   );
 };
 
