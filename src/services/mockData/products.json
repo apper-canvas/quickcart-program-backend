@@ -3,6 +3,7 @@
     "Id": 1,
     "name": "iPhone 15 Pro Max",
     "price": 1199,
+    "originalPrice": 1399,
     "category": "Electronics",
     "description": "The most advanced iPhone ever with titanium design, A17 Pro chip, and the most powerful camera system. Experience unprecedented performance with the latest iOS features and enhanced battery life.",
     "images": ["https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400", "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"],
@@ -10,10 +11,11 @@
     "rating": 4.8,
     "reviews": 1247
   },
-  {
+{
     "Id": 2,
     "name": "MacBook Air M3",
     "price": 1299,
+    "originalPrice": 1599,
     "category": "Electronics",
     "description": "Supercharged by the M3 chip, the 13-inch MacBook Air is incredibly fast and delivers exceptional battery life. Perfect for work, creativity, and everything in between.",
     "images": ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400", "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400"],
@@ -43,10 +45,11 @@
     "rating": 4.4,
     "reviews": 3421
   },
-  {
+{
     "Id": 5,
     "name": "Dyson V15 Detect",
     "price": 749,
+    "originalPrice": 949,
     "category": "Home",
     "description": "The most powerful, intelligent cordless vacuum. Reveals invisible dust with laser detection and adapts suction power automatically. Up to 60 minutes of runtime.",
     "images": ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400", "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=400"],
@@ -65,10 +68,11 @@
     "rating": 4.8,
     "reviews": 1834
   },
-  {
+{
     "Id": 7,
     "name": "Sony WH-1000XM5",
     "price": 399,
+    "originalPrice": 499,
     "category": "Electronics",
     "description": "Industry-leading noise cancellation with exceptional sound quality. 30-hour battery life and crystal-clear hands-free calling make these headphones perfect for any lifestyle.",
     "images": ["https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400", "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400"],
@@ -87,10 +91,11 @@
     "rating": 4.7,
     "reviews": 1923
   },
-  {
+{
     "Id": 9,
     "name": "iPad Air M2",
     "price": 599,
+    "originalPrice": 749,
     "category": "Electronics",
     "description": "Powerful, colorful, and wonderfully versatile. iPad Air is designed to help you create, stay connected, and get things done. Now with the M2 chip for incredible performance.",
     "images": ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400", "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=400"],
@@ -109,10 +114,11 @@
     "rating": 4.5,
     "reviews": 2634
   },
-  {
+{
     "Id": 11,
     "name": "Instant Pot Pro Plus",
     "price": 149,
+    "originalPrice": 199,
     "category": "Home",
     "description": "11-in-1 electric pressure cooker with advanced features. Cook faster, retain more flavor, and enjoy hands-free cooking with 800+ built-in smart programs.",
     "images": ["https://images.unsplash.com/photo-1556909114-3e2f469ff32d?w=400", "https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=400"],

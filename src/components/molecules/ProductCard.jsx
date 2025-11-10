@@ -74,9 +74,14 @@ const ProductCard = ({ product, onAddToCart, className }) => {
       currency: "USD"
     }).format(price);
   };
-
-  const isLowStock = product.stock < 10;
+const isLowStock = product.stock < 10;
   const isOutOfStock = product.stock === 0;
+  
+  // Calculate discount percentage
+  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+  const discountPercentage = hasDiscount 
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
 
   return (
     <Link to={`/product/${product.Id}`} className="block">
@@ -88,6 +93,13 @@ const ProductCard = ({ product, onAddToCart, className }) => {
         )}
       >
 <div className="relative aspect-square overflow-hidden bg-gray-100">
+          {hasDiscount && (
+            <div className="absolute top-2 left-2 z-10">
+              <Badge variant="primary" className="text-xs font-bold shadow-lg">
+                {discountPercentage}% OFF
+              </Badge>
+            </div>
+          )}
           {/* Wishlist Heart Button */}
           <button
             onClick={handleWishlistToggle}
