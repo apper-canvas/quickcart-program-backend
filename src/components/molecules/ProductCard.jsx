@@ -1,13 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { cn } from "@/utils/cn";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import ApperIcon from "@/components/ApperIcon";
 import { toast } from "react-toastify";
+import { wishlistService } from "@/services/api/wishlistService";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Badge from "@/components/atoms/Badge";
+import { cn } from "@/utils/cn";
 
 const ProductCard = ({ product, onAddToCart, className }) => {
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+
+  // Check wishlist status on component mount
+  useEffect(() => {
+    const checkWishlistStatus = async () => {
+      try {
+        const inWishlist = await wishlistService.isInWishlist(product.Id);
+        setIsInWishlist(inWishlist);
+      } catch (error) {
+        console.error('Error checking wishlist status:', error);
+      }
+    };
+    
+    if (product?.Id) {
+      checkWishlistStatus();
+    }
+  }, [product?.Id]);
+
+  const handleWishlistToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isWishlistLoading) return;
+    
+    setIsWishlistLoading(true);
+    
+    try {
+      const result = await wishlistService.toggle(product.Id);
+      
+      if (result.success) {
+        setIsInWishlist(!isInWishlist);
+        toast.success(result.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error);
+      toast.error('Failed to update wishlist');
+    } finally {
+      setIsWishlistLoading(false);
+    }
+  };
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -17,7 +68,6 @@ const ProductCard = ({ product, onAddToCart, className }) => {
       toast.success(`${product.name} added to cart!`);
     }
   };
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -37,7 +87,34 @@ const ProductCard = ({ product, onAddToCart, className }) => {
           className
         )}
       >
-        <div className="relative aspect-square overflow-hidden bg-gray-100">
+<div className="relative aspect-square overflow-hidden bg-gray-100">
+          {/* Wishlist Heart Button */}
+          <button
+            onClick={handleWishlistToggle}
+            disabled={isWishlistLoading}
+            className={cn(
+              "absolute top-2 right-2 z-10 p-2 rounded-full",
+              "bg-white/90 backdrop-blur-sm shadow-soft",
+              "hover:bg-white hover:shadow-elevated",
+              "transition-all duration-200 ease-out",
+              "hover:scale-110 active:scale-95",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              "group"
+            )}
+            aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <ApperIcon 
+              name="Heart" 
+              size={18} 
+              className={cn(
+                "transition-colors duration-200",
+                isInWishlist 
+                  ? "text-accent fill-accent" 
+                  : "text-gray-400 group-hover:text-accent",
+                isWishlistLoading && "animate-pulse"
+              )}
+            />
+          </button>
           <img
             src={product.images[0]}
             alt={product.name}
