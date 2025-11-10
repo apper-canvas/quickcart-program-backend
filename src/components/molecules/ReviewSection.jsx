@@ -7,6 +7,7 @@ import Loading from "@/components/ui/Loading";
 import { cn } from "@/utils/cn";
 
 function ReviewSection({ productId, className }) {
+  const isCompact = className?.includes('compact');
 const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -95,11 +96,11 @@ const [reviews, setReviews] = useState([]);
 
 if (error || !reviews.length) {
     return (
-      <div className={cn("bg-white rounded-xl p-6 shadow-soft", className)}>
-        <h3 className="text-xl font-display font-semibold text-primary mb-4">
+      <div className={cn("bg-white rounded-xl shadow-soft", isCompact ? "p-4" : "p-6", className)}>
+        <h3 className={cn("font-display font-semibold text-primary mb-3", isCompact ? "text-lg" : "text-xl")}>
           Customer Reviews
         </h3>
-        <p className="text-gray-500 text-center py-8">
+        <p className={cn("text-gray-500 text-center", isCompact ? "py-4 text-sm" : "py-8")}>
           {error || "No reviews available for this product yet."}
         </p>
       </div>
@@ -149,28 +150,28 @@ if (error || !reviews.length) {
   const averageRating = reviews.reduce((sum, review) => sum + (review?.rating || 0), 0) / reviews.length;
   const totalReviews = reviews.length;
   return (
-<div className={cn("bg-white rounded-xl p-6 shadow-soft", className)}>
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-display font-semibold text-primary">
+<div className={cn("bg-white rounded-xl shadow-soft", isCompact ? "p-4" : "p-6", className)}>
+<div className={isCompact ? "mb-4" : "mb-6"}>
+        <div className={cn("flex items-center justify-between", isCompact ? "mb-4" : "mb-6")}>
+          <h3 className={cn("font-display font-semibold text-primary", isCompact ? "text-lg" : "text-xl")}>
             Customer Reviews
           </h3>
           <Button
             onClick={() => setShowForm(!showForm)}
             variant="outline"
-            className="flex items-center gap-2"
+            className={cn("flex items-center gap-2", isCompact ? "text-sm px-3 py-2" : "")}
           >
-            <ApperIcon name={showForm ? "X" : "Plus"} size={16} />
+            <ApperIcon name={showForm ? "X" : "Plus"} size={isCompact ? 14 : 16} />
             {showForm ? "Cancel" : "Write Review"}
           </Button>
         </div>
 
         {/* Review Form */}
-        {showForm && (
-          <div className="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
-            <h4 className="text-lg font-semibold text-primary mb-4">Write Your Review</h4>
+{showForm && (
+          <div className={cn("bg-gray-50 rounded-xl border border-gray-200", isCompact ? "mb-6 p-4" : "mb-8 p-6")}>
+            <h4 className={cn("font-semibold text-primary mb-3", isCompact ? "text-base" : "text-lg")}>Write Your Review</h4>
             
-            <form onSubmit={handleSubmitReview} className="space-y-4">
+            <form onSubmit={handleSubmitReview} className={isCompact ? "space-y-3" : "space-y-4"}>
               {/* Rating Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -182,11 +183,11 @@ if (error || !reviews.length) {
                       key={star}
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
-                      className="text-2xl hover:scale-110 transition-transform"
+                      className="hover:scale-110 transition-transform"
                     >
                       <ApperIcon 
                         name="Star" 
-                        size={24}
+                        size={isCompact ? 20 : 24}
                         className={star <= formData.rating 
                           ? "text-yellow-400 fill-current" 
                           : "text-gray-300"
@@ -206,7 +207,7 @@ if (error || !reviews.length) {
                   type="text"
                   value={formData.reviewerName}
                   onChange={(e) => setFormData(prev => ({ ...prev, reviewerName: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                  className={cn("w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent", isCompact ? "px-3 py-1.5 text-sm" : "px-3 py-2")}
                   placeholder="Enter your name"
                   required
                 />
@@ -220,8 +221,8 @@ if (error || !reviews.length) {
                 <textarea
                   value={formData.reviewText}
                   onChange={(e) => setFormData(prev => ({ ...prev, reviewText: e.target.value }))}
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent resize-none"
+                  rows={isCompact ? 3 : 4}
+                  className={cn("w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent resize-none", isCompact ? "px-3 py-1.5 text-sm" : "px-3 py-2")}
                   placeholder="Share your experience with this product..."
                   required
                 />
@@ -233,15 +234,16 @@ if (error || !reviews.length) {
                   type="button"
                   variant="outline"
                   onClick={() => setShowForm(false)}
+                  className={isCompact ? "text-sm px-3 py-2" : ""}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={submitting || formData.rating === 0}
-                  className="flex items-center gap-2"
+                  className={cn("flex items-center gap-2", isCompact ? "text-sm px-3 py-2" : "")}
                 >
-                  {submitting && <ApperIcon name="Loader2" size={16} className="animate-spin" />}
+                  {submitting && <ApperIcon name="Loader2" size={isCompact ? 14 : 16} className="animate-spin" />}
                   {submitting ? "Submitting..." : "Submit Review"}
                 </Button>
               </div>
@@ -249,16 +251,16 @@ if (error || !reviews.length) {
           </div>
         )}
         
-        {/* Review Summary */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 p-4 bg-gray-50 rounded-lg">
+{/* Review Summary */}
+        <div className={cn("flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-50 rounded-lg", isCompact ? "mb-4 p-3" : "mb-6 p-4")}>
           <div className="flex items-center gap-3 mb-3 sm:mb-0">
             <div className="flex items-center gap-1">
-              {renderStars(averageRating, "w-5 h-5")}
+              {renderStars(averageRating, isCompact ? "w-4 h-4" : "w-5 h-5")}
             </div>
-            <span className="text-2xl font-bold text-primary">
+            <span className={cn("font-bold text-primary", isCompact ? "text-xl" : "text-2xl")}>
               {averageRating.toFixed(1)}
             </span>
-            <span className="text-gray-600">
+            <span className={cn("text-gray-600", isCompact ? "text-sm" : "")}>
               out of 5
             </span>
           </div>
@@ -268,22 +270,22 @@ if (error || !reviews.length) {
         </div>
 
 {/* Rating Distribution */}
-        <div className="mb-8">
+<div className={isCompact ? "mb-4" : "mb-8"}>
           {[5, 4, 3, 2, 1].map((stars) => {
             const count = reviews.filter(r => r?.rating && Math.floor(r.rating) === stars).length;
             const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
             return (
-              <div key={stars} className="flex items-center gap-3 mb-2">
-                <span className="text-sm font-medium text-gray-600 w-12">
+              <div key={stars} className={cn("flex items-center gap-3", isCompact ? "mb-1.5" : "mb-2")}>
+                <span className={cn("font-medium text-gray-600 w-12", isCompact ? "text-xs" : "text-sm")}>
                   {stars} star
                 </span>
-                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <div className={cn("flex-1 bg-gray-200 rounded-full", isCompact ? "h-1.5" : "h-2")}>
                   <div
-                    className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                    className={cn("bg-yellow-400 rounded-full transition-all duration-300", isCompact ? "h-1.5" : "h-2")}
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
-                <span className="text-sm text-gray-600 w-8">
+                <span className={cn("text-gray-600 w-8", isCompact ? "text-xs" : "text-sm")}>
                   {count}
                 </span>
               </div>
@@ -293,49 +295,49 @@ if (error || !reviews.length) {
       </div>
 
       {/* Individual Reviews */}
-<div className="space-y-6">
+<div className={cn("space-y-4", isCompact ? "space-y-3" : "space-y-6")}>
         {reviews.map((review) => (
-          <div key={review?.Id || Math.random()} className="border-b border-gray-100 last:border-b-0 pb-6 last:pb-0">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+          <div key={review?.Id || Math.random()} className={cn("border-b border-gray-100 last:border-b-0", isCompact ? "pb-3 last:pb-0" : "pb-6 last:pb-0")}>
+            <div className={cn("flex flex-col sm:flex-row sm:items-start sm:justify-between", isCompact ? "mb-2" : "mb-3")}>
               <div className="flex items-center gap-3 mb-2 sm:mb-0">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                <div className={cn("bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold", isCompact ? "w-8 h-8 text-sm" : "w-10 h-10")}>
                   {review?.customerName?.charAt(0)?.toUpperCase() || '?'}
                 </div>
                 <div>
-                  <h4 className="font-medium text-primary">
+                  <h4 className={cn("font-medium text-primary", isCompact ? "text-sm" : "")}>
                     {review?.customerName || 'Anonymous'}
                   </h4>
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
-                      {renderStars(review?.rating || 0)}
+                      {renderStars(review?.rating || 0, isCompact ? "w-3 h-3" : "")}
                     </div>
-                    <span className="text-sm text-gray-600">
+                    <span className={cn("text-gray-600", isCompact ? "text-xs" : "text-sm")}>
                       {(review?.rating || 0).toFixed(1)}
                     </span>
                   </div>
                 </div>
               </div>
-              <span className="text-sm text-gray-500">
+              <span className={cn("text-gray-500", isCompact ? "text-xs" : "text-sm")}>
                 {review?.date ? formatDate(review.date) : 'Unknown date'}
               </span>
             </div>
-{review?.title && (
-              <h5 className="font-medium text-primary mb-2">
+            {review?.title && (
+              <h5 className={cn("font-medium text-primary mb-2", isCompact ? "text-sm" : "")}>
                 {review.title}
               </h5>
             )}
             
-            <p className="text-gray-700 leading-relaxed">
+            <p className={cn("text-gray-700 leading-relaxed", isCompact ? "text-sm" : "")}>
               {review?.comment || 'No comment provided'}
             </p>
             
             {(review?.helpful || 0) > 0 && (
-              <div className="flex items-center gap-2 mt-3 text-sm text-gray-600">
-                <ApperIcon name="ThumbsUp" className="w-4 h-4" />
+              <div className={cn("flex items-center gap-2 mt-2 text-gray-600", isCompact ? "text-xs" : "text-sm mt-3")}>
+                <ApperIcon name="ThumbsUp" className={isCompact ? "w-3 h-3" : "w-4 h-4"} />
                 <span>{review.helpful} people found this helpful</span>
               </div>
             )}
-</div>
+          </div>
         ))}
       </div>
     </div>

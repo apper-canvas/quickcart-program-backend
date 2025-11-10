@@ -315,11 +315,54 @@ const loadProduct = async () => {
                 </div>
               </div>
 
-              <div className="space-y-3">
+<div className="space-y-3">
                 <h3 className="font-semibold text-primary">Description</h3>
                 <p className="text-gray-700 leading-relaxed">
                   {product.description}
                 </p>
+              </div>
+
+              {/* Product Specifications */}
+              <div className="bg-white rounded-xl p-6 shadow-soft">
+                <h3 className="text-xl font-display font-semibold text-primary mb-4">
+                  Product Specifications
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="font-medium text-gray-600">Brand:</span>
+                      <span className="text-primary font-semibold">{product.brand || 'Not specified'}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="font-medium text-gray-600">Category:</span>
+                      <span className="text-primary">{product.category}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="font-medium text-gray-600">SKU:</span>
+                      <span className="text-primary font-mono text-sm">{product.Id || 'N/A'}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="font-medium text-gray-600">Availability:</span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        product.inStock 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {product.inStock ? 'In Stock' : 'Out of Stock'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="font-medium text-gray-600">Weight:</span>
+                      <span className="text-primary">{product.weight || 'Not specified'}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="font-medium text-gray-600">Dimensions:</span>
+                      <span className="text-primary">{product.dimensions || 'Not specified'}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4 pt-4 border-t border-gray-200">
@@ -394,8 +437,8 @@ const loadProduct = async () => {
           </div>
 </div>
         
-        {/* Reviews Section */}
-        <ReviewSection productId={product.Id} />
+{/* Reviews Section - Compact */}
+        <ReviewSection productId={product.Id} className="compact" />
         {/* Related Products Carousel */}
         <div className="mt-12">
           <ProductCarousel
