@@ -2,13 +2,21 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/utils/cn";
 import ApperIcon from "@/components/ApperIcon";
 import Loading from "@/components/ui/Loading";
+import Button from "@/components/atoms/Button";
 import { reviewService } from "@/services/api/reviewService";
+import { toast } from "react-toastify";
 
 function ReviewSection({ productId, className }) {
-  const [reviews, setReviews] = useState([]);
+const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    rating: 0,
+    reviewerName: '',
+    reviewText: ''
+  });
   useEffect(() => {
     loadReviews();
   }, [productId]);
@@ -103,10 +111,104 @@ function ReviewSection({ productId, className }) {
 
   return (
     <div className={cn("bg-white rounded-xl p-6 shadow-soft", className)}>
-      <div className="mb-6">
-        <h3 className="text-xl font-display font-semibold text-primary mb-4">
-          Customer Reviews
-        </h3>
+<div className="mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-display font-semibold text-primary">
+            Customer Reviews
+          </h3>
+          <Button
+            onClick={() => setShowForm(!showForm)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <ApperIcon name={showForm ? "X" : "Plus"} size={16} />
+            {showForm ? "Cancel" : "Write Review"}
+          </Button>
+        </div>
+
+        {/* Review Form */}
+        {showForm && (
+          <div className="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
+            <h4 className="text-lg font-semibold text-primary mb-4">Write Your Review</h4>
+            
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              {/* Rating Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Rating *
+                </label>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                      className="text-2xl hover:scale-110 transition-transform"
+                    >
+                      <ApperIcon 
+                        name="Star" 
+                        size={24}
+                        className={star <= formData.rating 
+                          ? "text-yellow-400 fill-current" 
+                          : "text-gray-300"
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Reviewer Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.reviewerName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, reviewerName: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+
+              {/* Review Text */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Review *
+                </label>
+                <textarea
+                  value={formData.reviewText}
+                  onChange={(e) => setFormData(prev => ({ ...prev, reviewText: e.target.value }))}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent resize-none"
+                  placeholder="Share your experience with this product..."
+                  required
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={submitting || formData.rating === 0}
+                  className="flex items-center gap-2"
+                >
+                  {submitting && <ApperIcon name="Loader2" size={16} className="animate-spin" />}
+                  {submitting ? "Submitting..." : "Submit Review"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        )}
         
         {/* Review Summary */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 p-4 bg-gray-50 rounded-lg">
@@ -198,9 +300,50 @@ function ReviewSection({ productId, className }) {
             )}
           </div>
         ))}
-      </div>
+</div>
     </div>
   );
+
+  // Handle form submission
+  async function handleSubmitReview(e) {
+    e.preventDefault();
+    
+    if (formData.rating === 0 || !formData.reviewerName.trim() || !formData.reviewText.trim()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      const reviewData = {
+        productId: productId,
+        rating: formData.rating,
+        reviewerName: formData.reviewerName.trim(),
+        reviewText: formData.reviewText.trim()
+      };
+
+      await reviewService.create(reviewData);
+      
+      // Reset form
+      setFormData({
+        rating: 0,
+        reviewerName: '',
+        reviewText: ''
+      });
+      setShowForm(false);
+      
+      // Refresh reviews list
+      await loadReviews();
+      
+      toast.success("Review submitted successfully!");
+      
+    } catch (error) {
+      toast.error(error.message || "Failed to submit review");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 }
 
 export default ReviewSection;
